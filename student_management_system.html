@@ -1,0 +1,399 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:15px;color:var(--color-text-primary)}
+.app{display:flex;height:600px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-primary)}
+.sidebar{width:200px;background:var(--color-background-secondary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:16px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.sidebar-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:14px;color:var(--color-text-secondary);transition:background .15s,color .15s;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--color-background-primary);color:var(--color-text-primary)}
+.nav-item.active{background:var(--color-background-primary);color:var(--color-text-primary);font-weight:500;border-right:2px solid #7F77DD}
+.nav-item i{font-size:17px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:14px 20px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.page-title{font-size:16px;font-weight:500}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-size:13px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer;font-family:var(--font-sans);transition:background .15s}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:#7F77DD;border-color:#7F77DD;color:#fff}
+.btn-primary:hover{background:#534AB7;border-color:#534AB7}
+.btn-danger{background:var(--color-background-danger);border-color:var(--color-border-danger);color:var(--color-text-danger)}
+.btn-danger:hover{opacity:.85}
+.content{flex:1;overflow-y:auto;padding:20px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px 16px}
+.stat-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:6px}
+.stat-value{font-size:22px;font-weight:500}
+.stat-sub{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.search-bar{display:flex;gap:8px;margin-bottom:16px;align-items:center}
+.search-bar input{flex:1;padding:7px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-primary);font-family:var(--font-sans);font-size:14px}
+.search-bar input:focus{outline:none;border-color:var(--color-border-primary)}
+.search-bar select{padding:7px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-primary);font-family:var(--font-sans);font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead th{padding:8px 12px;text-align:left;font-size:12px;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase;letter-spacing:.04em}
+tbody tr{border-bottom:0.5px solid var(--color-border-tertiary);transition:background .1s}
+tbody tr:hover{background:var(--color-background-secondary)}
+tbody td{padding:10px 12px;color:var(--color-text-primary)}
+.badge{display:inline-block;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:500}
+.badge-a{background:#EAF3DE;color:#3B6D11}
+.badge-b{background:#E6F1FB;color:#185FA5}
+.badge-c{background:#FAEEDA;color:#854F0B}
+.badge-f{background:#FCEBEB;color:#A32D2D}
+.badge-active{background:#E1F5EE;color:#0F6E56}
+.badge-inactive{background:#F1EFE8;color:#5F5E5A}
+.avatar{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;background:#EEEDFE;color:#534AB7;margin-right:8px;vertical-align:middle;flex-shrink:0}
+.td-name{display:flex;align-items:center}
+.modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:10;border-radius:var(--border-radius-lg)}
+.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:24px;width:420px;max-height:90%;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:500;margin-bottom:20px}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:12px;color:var(--color-text-secondary);margin-bottom:5px;font-weight:500}
+.form-input{width:100%;padding:8px 11px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-primary);font-family:var(--font-sans);font-size:14px}
+.form-input:focus{outline:none;border-color:#7F77DD}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.section-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:16px;margin-bottom:16px}
+.section-heading{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+.progress-bar{height:6px;background:var(--color-background-primary);border-radius:9999px;overflow:hidden;margin-top:4px}
+.progress-fill{height:100%;border-radius:9999px;background:#7F77DD}
+.course-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.course-row:last-child{border-bottom:none}
+.empty-state{text-align:center;padding:40px 20px;color:var(--color-text-secondary);font-size:14px}
+.tab-bar{display:flex;gap:4px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:20px}
+.tab{padding:8px 16px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-1px;font-family:var(--font-sans)}
+.tab.active{color:var(--color-text-primary);border-bottom-color:#7F77DD;font-weight:500}
+.action-btns{display:flex;gap:6px}
+.icon-btn{padding:4px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:none;cursor:pointer;font-size:14px;color:var(--color-text-secondary);display:inline-flex;align-items:center}
+.icon-btn:hover{background:var(--color-background-secondary)}
+</style>
+
+<div class="app" style="position:relative">
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div style="display:flex;align-items:center;gap:8px">
+      <i class="ti ti-school" style="font-size:20px;color:#7F77DD" aria-hidden="true"></i>
+      <span style="font-weight:500;font-size:14px">EduTrack</span>
+    </div>
+  </div>
+  <nav style="padding:8px 0;flex:1">
+    <button class="nav-item active" onclick="showPage('dashboard')">
+      <i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard
+    </button>
+    <button class="nav-item" onclick="showPage('students')">
+      <i class="ti ti-users" aria-hidden="true"></i> Students
+    </button>
+    <button class="nav-item" onclick="showPage('grades')">
+      <i class="ti ti-clipboard-list" aria-hidden="true"></i> Grades
+    </button>
+    <button class="nav-item" onclick="showPage('courses')">
+      <i class="ti ti-book" aria-hidden="true"></i> Courses
+    </button>
+  </nav>
+  <div style="padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary)">
+    <div style="font-size:12px;color:var(--color-text-secondary)">Admin Panel</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">Dashboard</div>
+    <div class="topbar-actions" id="topbar-actions"></div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+
+<div id="modal-container"></div>
+</div>
+
+<script>
+const COLORS = ['#534AB7','#1D9E75','#D85A30','#D4537E','#378ADD','#639922','#BA7517'];
+let students = [
+  {id:1,name:'Priya Sharma',email:'priya.s@edu.in',age:20,grade:'A',course:'Computer Science',status:'Active',marks:{math:92,english:88,science:95,history:80}},
+  {id:2,name:'Arjun Mehta',email:'arjun.m@edu.in',age:21,grade:'B',course:'Mathematics',status:'Active',marks:{math:78,english:72,science:68,history:75}},
+  {id:3,name:'Neha Kapoor',email:'neha.k@edu.in',age:19,grade:'A',course:'Physics',status:'Active',marks:{math:89,english:91,science:94,history:87}},
+  {id:4,name:'Rohan Gupta',email:'rohan.g@edu.in',age:22,grade:'C',course:'Economics',status:'Inactive',marks:{math:62,english:65,science:58,history:70}},
+  {id:5,name:'Ananya Patel',email:'ananya.p@edu.in',age:20,grade:'B',course:'Computer Science',status:'Active',marks:{math:82,english:79,science:85,history:77}},
+  {id:6,name:'Vikram Singh',email:'vikram.s@edu.in',age:23,grade:'A',course:'Engineering',status:'Active',marks:{math:96,english:84,science:93,history:88}},
+  {id:7,name:'Kavita Rao',email:'kavita.r@edu.in',age:21,grade:'F',course:'Arts',status:'Inactive',marks:{math:45,english:52,science:40,history:48}},
+];
+let nextId = 8;
+let currentPage = 'dashboard';
+let editId = null;
+let searchQuery = '';
+let filterCourse = '';
+
+const courses = ['Computer Science','Mathematics','Physics','Economics','Engineering','Arts','Biology'];
+const subjects = ['math','english','science','history'];
+
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+function gradeFromAvg(avg){if(avg>=90)return'A';if(avg>=75)return'B';if(avg>=60)return'C';return'F'}
+function avgMarks(marks){return Math.round(Object.values(marks).reduce((a,b)=>a+b,0)/subjects.length)}
+function badgeClass(g){return`badge badge-${g.toLowerCase()}`}
+function statusBadge(s){return s==='Active'?'badge badge-active':'badge badge-inactive'}
+
+function showPage(page){
+  currentPage = page;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.textContent.trim().toLowerCase().includes(page)));
+  document.getElementById('page-title').textContent = {dashboard:'Dashboard',students:'Students',grades:'Grades',courses:'Courses'}[page];
+  const actions = document.getElementById('topbar-actions');
+  actions.innerHTML = page==='students' ? `<button class="btn btn-primary" onclick="openModal()"><i class="ti ti-plus" aria-hidden="true"></i> Add Student</button>` : '';
+  render();
+}
+
+function render(){
+  const c = document.getElementById('content');
+  if(currentPage==='dashboard') c.innerHTML = renderDashboard();
+  else if(currentPage==='students') c.innerHTML = renderStudents();
+  else if(currentPage==='grades') c.innerHTML = renderGrades();
+  else if(currentPage==='courses') c.innerHTML = renderCourses();
+}
+
+function renderDashboard(){
+  const active = students.filter(s=>s.status==='Active').length;
+  const avgAll = Math.round(students.reduce((a,s)=>a+avgMarks(s.marks),0)/students.length);
+  const passing = students.filter(s=>s.grade!=='F').length;
+  const byCourse = {};
+  courses.forEach(c=>{byCourse[c]=students.filter(s=>s.course===c).length});
+  const topCourse = Object.entries(byCourse).sort((a,b)=>b[1]-a[1])[0];
+  return`
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Total students</div><div class="stat-value">${students.length}</div><div class="stat-sub">${active} active</div></div>
+    <div class="stat-card"><div class="stat-label">Average score</div><div class="stat-value">${avgAll}%</div><div class="stat-sub">across all subjects</div></div>
+    <div class="stat-card"><div class="stat-label">Pass rate</div><div class="stat-value">${Math.round(passing/students.length*100)}%</div><div class="stat-sub">${passing} of ${students.length} passing</div></div>
+    <div class="stat-card"><div class="stat-label">Top course</div><div class="stat-value" style="font-size:16px">${topCourse[0]}</div><div class="stat-sub">${topCourse[1]} students</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="section-card">
+      <div class="section-heading">Grade distribution</div>
+      ${['A','B','C','F'].map(g=>{
+        const cnt=students.filter(s=>s.grade===g).length;
+        const pct=Math.round(cnt/students.length*100);
+        return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="width:20px;font-size:13px;font-weight:500" class="${badgeClass(g)}">${g}</span>
+          <div style="flex:1"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${g==='A'?'#1D9E75':g==='B'?'#378ADD':g==='C'?'#BA7517':'#E24B4A'}"></div></div></div>
+          <span style="font-size:13px;color:var(--color-text-secondary);min-width:40px;text-align:right">${cnt} (${pct}%)</span>
+        </div>`
+      }).join('')}
+    </div>
+    <div class="section-card">
+      <div class="section-heading">Recent students</div>
+      ${students.slice(-4).reverse().map(s=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="avatar">${initials(s.name)}</div>
+            <div>
+              <div style="font-size:13px;font-weight:500">${s.name}</div>
+              <div style="font-size:11px;color:var(--color-text-secondary)">${s.course}</div>
+            </div>
+          </div>
+          <span class="${badgeClass(s.grade)}">${s.grade}</span>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+function renderStudents(){
+  let filtered = students.filter(s=>{
+    const q = searchQuery.toLowerCase();
+    return (!q || s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q)) &&
+           (!filterCourse || s.course===filterCourse);
+  });
+  return`
+  <div class="search-bar">
+    <input type="text" placeholder="Search by name or email…" value="${searchQuery}" oninput="searchQuery=this.value;render()" />
+    <select onchange="filterCourse=this.value;render()">
+      <option value="">All courses</option>
+      ${courses.map(c=>`<option value="${c}"${filterCourse===c?' selected':''}>${c}</option>`).join('')}
+    </select>
+    <span style="font-size:13px;color:var(--color-text-secondary)">${filtered.length} student${filtered.length!==1?'s':''}</span>
+  </div>
+  <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden">
+  <table>
+    <thead><tr><th>Name</th><th>Course</th><th>Age</th><th>Avg Score</th><th>Grade</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+    ${filtered.length===0?`<tr><td colspan="7"><div class="empty-state"><i class="ti ti-users-off" style="font-size:28px;display:block;margin-bottom:8px" aria-hidden="true"></i>No students found</div></td></tr>`
+    :filtered.map(s=>`
+      <tr>
+        <td><div class="td-name"><div class="avatar">${initials(s.name)}</div><div><div style="font-weight:500">${s.name}</div><div style="font-size:12px;color:var(--color-text-secondary)">${s.email}</div></div></div></td>
+        <td>${s.course}</td>
+        <td>${s.age}</td>
+        <td>${avgMarks(s.marks)}%</td>
+        <td><span class="${badgeClass(s.grade)}">${s.grade}</span></td>
+        <td><span class="${statusBadge(s.status)}">${s.status}</span></td>
+        <td><div class="action-btns">
+          <button class="icon-btn" title="View" onclick="viewStudent(${s.id})"><i class="ti ti-eye" aria-hidden="true"></i></button>
+          <button class="icon-btn" title="Edit" onclick="openModal(${s.id})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+          <button class="icon-btn" title="Delete" onclick="deleteStudent(${s.id})" style="color:var(--color-text-danger)"><i class="ti ti-trash" aria-hidden="true"></i></button>
+        </div></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+  </div>`;
+}
+
+function renderGrades(){
+  return`
+  <div class="tab-bar"><span class="tab active">All students</span></div>
+  <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden">
+  <table>
+    <thead><tr><th>Student</th><th>Math</th><th>English</th><th>Science</th><th>History</th><th>Average</th><th>Grade</th></tr></thead>
+    <tbody>
+    ${students.map(s=>{
+      const avg=avgMarks(s.marks);
+      return`<tr>
+        <td><div class="td-name"><div class="avatar">${initials(s.name)}</div>${s.name}</div></td>
+        ${subjects.map(sub=>`<td><span style="font-weight:${s.marks[sub]>=90?'500':'400'};color:${s.marks[sub]>=90?'#1D9E75':s.marks[sub]<60?'#E24B4A':'var(--color-text-primary)'}">${s.marks[sub]}</span></td>`).join('')}
+        <td><strong>${avg}%</strong></td>
+        <td><span class="${badgeClass(s.grade)}">${s.grade}</span></td>
+      </tr>`
+    }).join('')}
+    </tbody>
+  </table>
+  </div>`;
+}
+
+function renderCourses(){
+  const byCourse = {};
+  courses.forEach(c=>{
+    const cs = students.filter(s=>s.course===c);
+    byCourse[c] = {count:cs.length, avg:cs.length?Math.round(cs.reduce((a,s)=>a+avgMarks(s.marks),0)/cs.length):0};
+  });
+  return`
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+  ${courses.map((c,i)=>{
+    const d=byCourse[c];
+    const color=COLORS[i%COLORS.length];
+    return`<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="width:36px;height:36px;border-radius:var(--border-radius-md);background:${color}22;display:flex;align-items:center;justify-content:center">
+          <i class="ti ti-book" style="font-size:18px;color:${color}" aria-hidden="true"></i>
+        </div>
+        <div>
+          <div style="font-size:14px;font-weight:500">${c}</div>
+          <div style="font-size:12px;color:var(--color-text-secondary)">${d.count} student${d.count!==1?'s':''}</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Average score</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${d.avg}%;background:${color}"></div></div>
+      <div style="font-size:13px;font-weight:500;margin-top:4px">${d.avg}%</div>
+    </div>`
+  }).join('')}
+  </div>`;
+}
+
+function openModal(id=null){
+  editId = id;
+  const s = id ? students.find(x=>x.id===id) : null;
+  const title = id ? 'Edit student' : 'Add student';
+  document.getElementById('modal-container').innerHTML = `
+  <div class="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">${title}</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Full name</label><input class="form-input" id="f-name" value="${s?s.name:''}" placeholder="Student name" /></div>
+      <div class="form-group"><label class="form-label">Age</label><input class="form-input" id="f-age" type="number" min="15" max="30" value="${s?s.age:18}" /></div>
+    </div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="f-email" value="${s?s.email:''}" placeholder="email@edu.in" /></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Course</label>
+        <select class="form-input" id="f-course">
+          ${courses.map(c=>`<option${s&&s.course===c?' selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-input" id="f-status">
+          <option${s&&s.status==='Active'?' selected':''}>Active</option>
+          <option${s&&s.status==='Inactive'?' selected':''}>Inactive</option>
+        </select>
+      </div>
+    </div>
+    <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em">Marks (out of 100)</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Math</label><input class="form-input" id="f-math" type="number" min="0" max="100" value="${s?s.marks.math:75}" /></div>
+      <div class="form-group"><label class="form-label">English</label><input class="form-input" id="f-english" type="number" min="0" max="100" value="${s?s.marks.english:75}" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Science</label><input class="form-input" id="f-science" type="number" min="0" max="100" value="${s?s.marks.science:75}" /></div>
+      <div class="form-group"><label class="form-label">History</label><input class="form-input" id="f-history" type="number" min="0" max="100" value="${s?s.marks.history:75}" /></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveStudent()">Save student</button>
+    </div>
+  </div>
+  </div>`;
+}
+
+function closeModal(){document.getElementById('modal-container').innerHTML=''}
+
+function saveStudent(){
+  const name=document.getElementById('f-name').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  if(!name||!email){alert('Please fill in name and email.');return}
+  const marks={
+    math:Math.min(100,Math.max(0,+document.getElementById('f-math').value||0)),
+    english:Math.min(100,Math.max(0,+document.getElementById('f-english').value||0)),
+    science:Math.min(100,Math.max(0,+document.getElementById('f-science').value||0)),
+    history:Math.min(100,Math.max(0,+document.getElementById('f-history').value||0))
+  };
+  const avg=avgMarks(marks);
+  const grade=gradeFromAvg(avg);
+  if(editId){
+    const i=students.findIndex(s=>s.id===editId);
+    students[i]={...students[i],name,email,age:+document.getElementById('f-age').value,course:document.getElementById('f-course').value,status:document.getElementById('f-status').value,marks,grade};
+  } else {
+    students.push({id:nextId++,name,email,age:+document.getElementById('f-age').value,course:document.getElementById('f-course').value,status:document.getElementById('f-status').value,marks,grade});
+  }
+  closeModal();render();
+}
+
+function deleteStudent(id){
+  if(!confirm('Remove this student? This action cannot be undone.'))return;
+  students=students.filter(s=>s.id!==id);render();
+}
+
+function viewStudent(id){
+  const s=students.find(x=>x.id===id);
+  const avg=avgMarks(s.marks);
+  document.getElementById('modal-container').innerHTML=`
+  <div class="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <div style="width:48px;height:48px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:16px;color:#534AB7">${initials(s.name)}</div>
+      <div>
+        <div style="font-size:16px;font-weight:500">${s.name}</div>
+        <div style="font-size:13px;color:var(--color-text-secondary)">${s.email}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      ${[['Course',s.course],['Age',s.age],['Status',s.status],['Grade',s.grade]].map(([k,v])=>`
+        <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px">
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:2px">${k}</div>
+          <div style="font-weight:500;font-size:14px">${v}</div>
+        </div>`).join('')}
+    </div>
+    <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Subject scores</div>
+    ${subjects.map(sub=>`
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+          <span style="text-transform:capitalize">${sub}</span>
+          <span style="font-weight:500">${s.marks[sub]}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${s.marks[sub]}%;background:${s.marks[sub]>=90?'#1D9E75':s.marks[sub]>=75?'#7F77DD':s.marks[sub]>=60?'#BA7517':'#E24B4A'}"></div></div>
+      </div>`).join('')}
+    <div style="margin-top:12px;padding:10px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px;color:var(--color-text-secondary)">Overall average</span>
+      <span style="font-size:18px;font-weight:500">${avg}%</span>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Close</button>
+      <button class="btn btn-primary" onclick="closeModal();openModal(${s.id})"><i class="ti ti-edit" aria-hidden="true"></i> Edit</button>
+    </div>
+  </div>
+  </div>`;
+}
+
+showPage('dashboard');
+</script>
